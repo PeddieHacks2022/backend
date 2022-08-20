@@ -25,5 +25,5 @@ def process_curl(points):
 
     return "none"
 
-if __name__ == "__main__":
-    print(process(data.POSE))
+#if __name__ == "__main__":
+#    print(process(data.POSE))
