@@ -22,7 +22,8 @@ class WorkoutModel:
 
     def get_by_user(self, user_id: int):
         return connect().execute("""
-            SELECT * FROM user INNER JOIN workout_template ON user.id = workout_template.user_id WHERE user.id = ?
+            SELECT workout_template.id, workout_template.name, workout_type, reps, created_date
+            FROM user INNER JOIN workout_template ON user.id = workout_template.user_id WHERE user.id = ?
         """, (user_id,)).fetchall()
 
     def delete(self, id: int):
