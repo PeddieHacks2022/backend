@@ -19,3 +19,7 @@ class WorkoutModel:
 
     def get(self, id: int):
         return connect().execute("SELECT * FROM workout_template WHERE id = ?", (id,)).fetchone()
+
+    def delete(self, id: int):
+        return connect().execute("DELETE FROM workout_template WHERE id = ?", (id,))
+

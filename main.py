@@ -1,11 +1,19 @@
-# Imports
 import socket
 import threading
 import json
 from flask import Flask
+from dotenv import load_dotenv
+import os
+
 from Account.signup import signup_blueprint
 from Account.signin import signin_blueprint
 from User.workout import workout_blueprint
+
+load_dotenv()
+
+SERVER_IP = os.getenv("SERVER_IP")
+HTTP_PORT = int(os.getenv("HTTP_PORT"))
+SOCKET_PORT = int(os.getenv("SOCKET_PORT"))
 
 socket_server = None
 def intializeBackend():
@@ -13,7 +21,7 @@ def intializeBackend():
     # Initiate socket stream
     global socket_server
     socket_server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
-    socket_server.bind(("192.168.2.100", 8001))
+    socket_server.bind((SERVER_IP, SOCKET_PORT))
 
     # Connect flask and appropriate blueprints
     app = Flask(__name__)
@@ -36,5 +44,5 @@ if __name__ == "__main__":
     t1 = threading.Thread(target=streamListener)
     t1.daemon = True
     t1.start()
-    app.run(host="192.168.2.100", port=8000)
+    app.run(host=SERVER_IP, port=HTTP_PORT)
     
