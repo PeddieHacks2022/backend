@@ -23,8 +23,8 @@ def post(user_id: int):
 
 @workout_blueprint.route(PREFIX, methods=["GET"])
 def get(user_id: int):
-    workout = model.get_by_user(user_id)
-    return jsonify(workout)
+    workouts = model.get_by_user(user_id)
+    return jsonify({"workouts": [{"id": workout[0], "name": workout[1], "workoutType": workout[2], "reps": workout[3], "createdDate": workout[4]} for workout in workouts]})
 
 @workout_blueprint.route(f"{PREFIX}/<int:workout_id>", methods=["DELETE"])
 def delete(user_id: int, workout_id: int):
