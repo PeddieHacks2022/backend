@@ -2,13 +2,18 @@
 import socket
 import threading
 import json
+import UDPHandler
 from flask import Flask
 from Account.signup import signup_blueprint
 from Account.signin import signin_blueprint
+from UDPHandler import updupdate_blueprint
 from User.workout import workout_blueprint
+from db import migrate
 
 socket_server = None
 def intializeBackend():
+    # initialize database
+    migrate()
 
     # Initiate socket stream
     global socket_server
@@ -20,16 +25,23 @@ def intializeBackend():
     app.register_blueprint(signup_blueprint)
     app.register_blueprint(signin_blueprint)
     app.register_blueprint(workout_blueprint, url_prefix='/workout/<int:workout_id>')
+    app.register_blueprint(updupdate_blueprint)
     return app
 
 def streamListener():
     global socket_server
 
     while True:
-        print ("Waiting for client...")
+        #print ("Waiting for client...")
         bytesData, addr = socket_server.recvfrom(1024*16)
-        data = json.loads(bytesData.decode('utf-8'))
-        print("Received Messages:", data, " from", addr)
+        data = bytesData.decode('utf-8')
+        
+        try: # in case its a json table
+            data = json.loads(data)
+        except:
+            pass
+
+        UDPHandler.process(addr, data)
 
 if __name__ == "__main__":
     app = intializeBackend()
