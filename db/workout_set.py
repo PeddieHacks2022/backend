@@ -30,9 +30,7 @@ class WorkoutSetModel:
 
     def get_workouts(self, workout_set_id: int):
 
-        pass
-        # conn = connect()
-        # conn.execute("""
-        #     SELECT * FROM workout_set_to_workout_template INNER JOIN ON workout_template
-        #     WHERE workout_set_to_workout_template.
-        # """)
+        return connect().execute("""
+            SELECT * FROM workout_set_to_workout_template INNER JOIN ON workout_template
+            WHERE workout_set_to_workout_template.workout_set_id == ?
+        """, (workout_set_id,)).fetchall()
