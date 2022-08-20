@@ -1,9 +1,7 @@
 from flask import Blueprint, request
 from flask_bcrypt import generate_password_hash
-
-from db.account import AccountModel
-
-account = AccountModel()
+from DAOs import AccountDAO
+accountDAO = AccountDAO()
 
 signup_blueprint = Blueprint('signup_blueprint', __name__)
 
@@ -19,12 +17,12 @@ def signup():
         return "Malformed Request", 400
 
     # Verify if email already exists
-    if account.getUserByEmail(email):
+    if accountDAO.getUserByEmail(email):
         return "Email already registered", 403
 
     # hash + salt the password
     password = generate_password_hash(password, 10).decode("utf-8")
 
     # Register user
-    id = account.createUser(name, email, password)
+    id = accountDAO.createUser(name, email, password)
     return {"ID": id}
