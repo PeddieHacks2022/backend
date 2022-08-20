@@ -22,7 +22,7 @@ def post(user_id: int):
 
 @workout_blueprint.route(f"{PREFIX}/<int:workout_id>", methods=["GET"])
 def get(user_id: int, workout_id: int):
-    workout = model.get(workout_id)
+    workout = model.get_by_user(user_id)
     return jsonify(workout)
 
 @workout_blueprint.route(f"{PREFIX}/<int:workout_id>", methods=["DELETE"])

@@ -17,8 +17,13 @@ class WorkoutModel:
         conn.commit()
         return id
 
-    def get(self, id: int):
-        return connect().execute("SELECT * FROM workout_template WHERE id = ?", (id,)).fetchone()
+    def get_by_id(self, workout_id: int):
+        return connect().execute("SELECT * FROM workout_template WHERE id = ?", (workout_id,)).fetchone()
+
+    def get_by_user(self, user_id: int):
+        return connect().execute("""
+            SELECT * FROM user INNER JOIN workout_template ON user.id = workout_template.user_id WHERE user.id = ?
+        """, (user_id,)).fetchall()
 
     def delete(self, id: int):
         return connect().execute("DELETE FROM workout_template WHERE id = ?", (id,))
