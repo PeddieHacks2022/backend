@@ -3,7 +3,7 @@ from flask_bcrypt import generate_password_hash
 
 from db.account import AccountModel
 
-account = AccountModel()
+model = AccountModel()
 
 signin_blueprint = Blueprint('signin_blueprint', __name__)
 
@@ -17,7 +17,7 @@ def signin():
     if not (email and type(email) == str and password and type(password) == str):
         return "Malformed Request", 400
     
-    account = account.getUserByEmail(email)
+    account = model.getUserByEmail(email)
     if not account: # Verify if account exists
         return "Email does not exist", 404
 
