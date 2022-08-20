@@ -19,7 +19,7 @@ def intializeBackend():
     app = Flask(__name__)
     app.register_blueprint(signup_blueprint)
     app.register_blueprint(signin_blueprint)
-    app.register_blueprint(workout_blueprint, url_prefix='/workout/<int:workout_id>')
+    app.register_blueprint(workout_blueprint)
     return app
 
 def streamListener():
