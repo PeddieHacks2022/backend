@@ -31,8 +31,7 @@ def process(address, data):
     
     # Process table update
     session = temporaryData[address[0]]
-    session.jointTotals = data
-    """if not session.jointTotals: # initialize iteration table
+    if not session.jointTotals: # initialize iteration table
         session.jointTotals = data
         return
 
@@ -40,7 +39,6 @@ def process(address, data):
         for i in range(3):
             session.jointTotals[jointName][i] += data[jointName][i]
     session.totalToAverage += 1
-    """
 
 # Allow for http polling
 @updupdate_blueprint.route('/udp/update', methods=["POST"])
@@ -57,25 +55,25 @@ def poll():
     # Get important specifics for udp
     totals = session.jointTotals
     amount = session.totalToAverage
-    print("changes made:", amount)
+    #print("changes made:", amount)
     
     # Clear data
     session.jointTotals = None
     session.totalToAverage = 1
 
     # Average joint locations, update and return info
-    """
     for jointName in totals:
         for i in range(3):
             totals[jointName][i] /= amount
-    """
     
-    print("totals:", totals)
+    
+    #print("totals:", totals)
     rep_state = getRepState(mode, totals)
     if not rep_state or rep_state == session.rep_state:
         return {"change": "nothing"}
 
     session.rep_state = rep_state    
+    print("New State:", rep_state)
     if rep_state == "up": # switched from down to up
         session.reps += 1
         print("NEW REP, TOTAL:", session.reps)
