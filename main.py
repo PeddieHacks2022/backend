@@ -1,16 +1,14 @@
 # Imports
-import DAOs
 import socket
 import threading
 import json
 from flask import Flask
 from Account.signup import signup_blueprint
 from Account.signin import signin_blueprint
+from User.workout import workout_blueprint
 
 socket_server = None
 def intializeBackend():
-    # Connect database 
-    DAOs.connectToDatabase("FitFormV1")
 
     # Initiate socket stream
     global socket_server
@@ -21,6 +19,7 @@ def intializeBackend():
     app = Flask(__name__)
     app.register_blueprint(signup_blueprint)
     app.register_blueprint(signin_blueprint)
+    app.register_blueprint(workout_blueprint, url_prefix='/workout/<int:workout_id>')
     return app
 
 def streamListener():
@@ -38,3 +37,4 @@ if __name__ == "__main__":
     t1.daemon = True
     t1.start()
     app.run(host="192.168.2.100", port=8000)
+    
