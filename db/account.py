@@ -1,17 +1,15 @@
 from typing import List
 
-from . import connect
+from db import connect
 from db.utils import generate_id
 
 class AccountModel:
 
     def getUserByEmail(self, email: str) -> List[str]:
-        resultSet = connect().execute("SELECT * FROM user WHERE email = ?", (email,)).fetchone()
-        return resultSet
+        return connect().execute("SELECT * FROM user WHERE email = ?", (email,)).fetchone()
 
     def getUserByID(self, id: int) -> List[str]:
-        resultSet = connect().execute("SELECT * FROM user WHERE id = ?", (id,)).fetchone()
-        return resultSet
+        return connect().execute("SELECT * FROM user WHERE id = ?", (id,)).fetchone()
 
     def createUser(self, name: str, email: str, password: str) -> int:
         id = generate_id()
