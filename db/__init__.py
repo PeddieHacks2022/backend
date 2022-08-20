@@ -30,3 +30,7 @@ def migrate():
         );
     ''')
 
+def purge():
+    conn = connect()
+
+    conn.execute("DROP TABLE user, workout_template")

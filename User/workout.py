@@ -24,3 +24,8 @@ def post(user_id: int):
 def get(user_id: int, workout_id: int):
     workout = model.get(workout_id)
     return jsonify(workout)
+
+@workout_blueprint.route(f"{PREFIX}/<int:workout_id>", methods=["DELETE"])
+def delete(user_id: int, workout_id: int):
+    model.delete(workout_id)
+    return "Ok", 200

@@ -2,7 +2,7 @@
 
 # temp simple test script before we have a proper testing system
 
-api_url='http://localhost:5000'
+api_url='http://localhost:8000'
 user_id='1'
 
 # curl -vL \
@@ -24,6 +24,10 @@ user_id='1'
 #     "${api_url}/user/${user_id}/workout"
 
 workout_id='64930039'
+# curl -vL \
+#     -X GET \
+#     "${api_url}/user/${user_id}/workout/${workout_id}"
+
 curl -vL \
-    -X GET \
+    -X DELETE \
     "${api_url}/user/${user_id}/workout/${workout_id}"
