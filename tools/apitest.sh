@@ -3,7 +3,7 @@
 # temp simple test script before we have a proper testing system
 
 api_url='http://localhost:8000'
-user_id='50811127'
+user_id='35459901'
 
 # curl -vL \
 #     -X POST \
@@ -20,13 +20,13 @@ user_id='50811127'
 # curl -vL \
 #     -X POST \
 #     -H 'Content-Type: application/json' \
-#     --data '{"workout_type": "bicep_curl", "reps": 10}' \
+#     --data '{"name": "my workout", "workout_type": "bicep_curl", "reps": 10}' \
 #     "${api_url}/user/${user_id}/workout"
 
-workout_id='24003971'
+# workout_id='24003971'
 curl -vL \
     -X GET \
-    "${api_url}/user/${user_id}/workout/${workout_id}"
+    "${api_url}/user/${user_id}/workout"
 
 # curl -vL \
 #     -X DELETE \

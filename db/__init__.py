@@ -22,9 +22,12 @@ def migrate():
     conn.execute('''
         CREATE TABLE IF NOT EXISTS workout_template (
             id INT PRIMARY KEY     NOT NULL,
+            user_id        INT     NOT NULL,
+            name           TEXT    NOT NULL,
             workout_type   TEXT    NOT NULL,
             reps           INT     NOT NULL,
             created_date   TEXT    NOT NULL,
+            FOREIGN KEY (user_id) REFERENCES user (id)
         )
     ''')
 
@@ -35,7 +38,7 @@ def migrate():
             user_id        INT     NOT NULL,
             name           TEXT    NOT NULL,
             created_date   TEXT    NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES user (id),
+            FOREIGN KEY (user_id) REFERENCES user (id)
         )
     ''')
 
@@ -46,7 +49,7 @@ def migrate():
             workout_template_id     INT    NOT NULL,
             workout_set_id          INT    NOT NULL,
             FOREIGN KEY (workout_template_id) REFERENCES workout_template (id),
-            FOREIGN KEY (workout_set_id) REFERENCES workout_set (id),
+            FOREIGN KEY (workout_set_id) REFERENCES workout_set (id)
         )
     ''')
 
@@ -54,4 +57,8 @@ def migrate():
 def purge():
     conn = connect()
 
-    conn.execute("DROP TABLE user, workout_template, workout_set, workout_set_to_workout_template")
+    conn.execute("DROP TABLE IF EXISTS user")
+    conn.execute("DROP TABLE IF EXISTS workout_template")
+    conn.execute("DROP TABLE IF EXISTS workout_set")
+    conn.execute("DROP TABLE IF EXISTS workout_set_to_workout_template")
+
