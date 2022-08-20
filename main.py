@@ -15,4 +15,5 @@ def intializeBackend():
     app.run()
 
 if __name__ == "__main__":
-    intializeBackend()
+    app = intializeBackend()
+
