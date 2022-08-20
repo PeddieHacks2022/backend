@@ -4,6 +4,8 @@
 
 api_url='http://localhost:8000'
 user_id='90952796'
+routine_id='91323311'
+workout_id='84396080'
 
 # curl -vL \
 #     -X POST \
@@ -24,10 +26,26 @@ user_id='90952796'
 #     "${api_url}/user/${user_id}/workout"
 
 # workout_id='15317289'
-curl -vL \
-    -X GET \
-    "${api_url}/user/${user_id}/workout"
+# curl -vL \
+#     -X GET \
+#     "${api_url}/user/${user_id}/workout"
 
 # curl -vL \
 #     -X DELETE \
 #     "${api_url}/user/${user_id}/workout/${workout_id}"
+
+# curl -vL \
+#     -X POST \
+#     -H 'Content-Type: application/json' \
+#     --data '{"name": "my routine"}' \
+#     "${api_url}/user/${user_id}/routine"
+
+# curl -vL \
+#     -X PATCH \
+#     -H 'Content-Type: application/json' \
+#     --data "{\"workout_id\": ${workout_id}}" \
+#     "${api_url}/user/${user_id}/routine/${routine_id}"
+
+curl -vL \
+    -X GET \
+    "${api_url}/user/${user_id}/routine"
