@@ -1,10 +1,10 @@
 import numpy as np
 
-import data
-from util import bone, angle
+import exercise.data
+from exercise.util import bone, angle
 
-UP_THRESHOLD = 10
-DOWN_THRESHOLD = 160
+UP_THRESHOLD = 85
+DOWN_THRESHOLD = 140
 
 def process_curl(points):
 
@@ -19,6 +19,7 @@ def process_curl(points):
 
     print(left_angle, right_angle)
 
+    #print(left_angle, right_angle)
     if (left_angle < UP_THRESHOLD and right_angle < UP_THRESHOLD):
         return "up"
     if (left_angle > DOWN_THRESHOLD and right_angle > DOWN_THRESHOLD):

@@ -1,8 +1,7 @@
 
 import numpy as np
 
-import data
-from util import bone, angle
+from exercise.util import bone, angle
 
 LEG_UP_THRESHOLD = 45
 LEG_DOWN_THRESHOLD = 10

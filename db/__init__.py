@@ -1,6 +1,6 @@
 import sqlite3
 
-database_name = "FitFormV1"
+database_name = "FitFormV2"
 
 def connect():
     return sqlite3.connect(database_name, check_same_thread=False)
