@@ -1,7 +1,9 @@
 from flask import Blueprint, request
 from flask_bcrypt import generate_password_hash
-from DAOs import AccountDAO
-accountDAO = AccountDAO()
+
+from db.account import AccountModel
+
+account = AccountModel()
 
 signin_blueprint = Blueprint('signin_blueprint', __name__)
 
@@ -15,7 +17,7 @@ def signin():
     if not (email and type(email) == str and password and type(password) == str):
         return "Malformed Request", 400
     
-    account = accountDAO.getUserByEmail(email)
+    account = account.getUserByEmail(email)
     if not account: # Verify if account exists
         return "Email does not exist", 404
 
