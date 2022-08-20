@@ -1,5 +1,6 @@
 from flask import Blueprint, request
 from flask_bcrypt import generate_password_hash
+
 signup_blueprint = Blueprint('signup_blueprint', __name__)
 
 @signup_blueprint.route('/signup', methods=["POST"])
