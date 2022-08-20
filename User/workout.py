@@ -9,10 +9,10 @@ PREFIX = "/user/<int:user_id>/workout"
 
 @workout_blueprint.route(PREFIX, methods=["POST"])
 def post(user_id: int):
-
+    print(request.json)
     name = request.json.get("name", None)
-    workout_type = request.json.get("workout_type", None)
-    reps = request.json.get("reps", None)
+    workout_type = request.json.get("type", None)
+    reps = request.json.get("repCount", None)
 
     if not (name and type(name) == str and workout_type and type(workout_type) == str and reps and type(reps) == int):
         return "Malformed Request", 400

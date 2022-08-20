@@ -1,6 +1,6 @@
 # imports
 import time
-from exercise import process as getRepState
+from exercise import process as processWorkoutChange
 from flask import Blueprint, request
 updupdate_blueprint = Blueprint('updupdate_blueprint', __name__)
 
@@ -14,6 +14,7 @@ class workoutSession:
 
     jointTotals = None
     totalToAverage = 1
+    rep_progress = 0
 
 # Processing UDP updates 
 def process(address, data):
@@ -68,14 +69,14 @@ def poll():
     
     
     #print("totals:", totals)
-    rep_state = getRepState(mode, totals)
-    if not rep_state or rep_state == session.rep_state:
+    change = processWorkoutChange(mode, session, totals)
+    if not change:
         return {"change": "nothing"}
 
-    session.rep_state = rep_state    
-    print("New State:", rep_state)
-    if rep_state == "up": # switched from down to up
-        session.reps += 1
-        print("NEW REP, TOTAL:", session.reps)
+    elif change == "New state":
+        print("New State:", session.rep_state, "total reps:", session.reps)
+        return {"change": session.rep_state, "reps": session.reps}
 
-    return {"change": rep_state, "reps": session.reps}
+    else:
+        print("Bad form: ", change)
+        return {"change": "bad form", "details": change}
