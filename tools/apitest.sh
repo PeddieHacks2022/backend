@@ -10,3 +10,8 @@ curl -vL \
     -H 'Content-Type: application/json' \
     "${api_url}/user/1/workout"
 
+curl -vL \
+    -X POST \
+    -H 'Content-Type: application/json' \
+    --data '{"email": "testing@testing.com", "name": "testing", "password": "testing"}' \
+    "${api_url}/signup"
