@@ -1,8 +1,5 @@
-
-import data
-
-from curl import process_curl
-from jumping_jack import process_jumping_jack
+from exercise.curl import process_curl
+from exercise.jumping_jack import process_jumping_jack
 
 def process(mode, points):
     if (mode == "curl"):
@@ -10,5 +7,4 @@ def process(mode, points):
     if (mode == "jumping_jack"):
         return process_jumping_jack(points)
 
-if __name__ == "__main__":
-    print(process("curl", data.POSE))
+
