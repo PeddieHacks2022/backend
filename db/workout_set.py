@@ -6,7 +6,7 @@ from db.utils import generate_id
 
 class WorkoutSetModel:
 
-    def create(self, user_id: int, name: string) -> int:
+    def create(self, user_id: int, name: str) -> int:
         id = generate_id()
 
         conn = connect()
@@ -28,9 +28,31 @@ class WorkoutSetModel:
         conn.commit()
         return id
 
-    def get_workouts(self, workout_set_id: int):
+    def get_all_workouts(self, user_id: int):
 
-        return connect().execute("""
-            SELECT * FROM workout_set_to_workout_template INNER JOIN ON workout_template
-            WHERE workout_set_to_workout_template.workout_set_id == ?
-        """, (workout_set_id,)).fetchall()
+        # get all workout routines
+        conn = connect()
+
+        routine_ids = conn.execute("""
+            SELECT id
+            FROM workout_set
+            WHERE user_id = ?
+        """, (user_id,)).fetchall()
+
+        routines = {routine_id[0]: [] for routine_id in routine_ids}
+
+        for routine_id in routine_ids:
+            routine_id = routine_id[0]
+
+            workouts = connect().execute("""
+                SELECT workout_template.id, workout_template.name, workout_type, reps, created_date
+                FROM workout_set_to_workout_template INNER JOIN workout_template
+                ON workout_set_to_workout_template.workout_template_id = workout_template.id
+                WHERE workout_template.user_id == ? AND workout_set_to_workout_template.workout_set_id = ?
+            """, (user_id, routine_id,)).fetchall()
+            workout_json = [{"id": workout[0], "name": workout[1], "workoutType": workout[2], "reps": workout[3], "createdDate": workout[4]} for workout in workouts]
+
+            routines[routine_id].append(workout_json)
+
+        return routines
+        

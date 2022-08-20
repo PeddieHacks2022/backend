@@ -11,6 +11,7 @@ from Account.signup import signup_blueprint
 from Account.signin import signin_blueprint
 from UDPHandler import updupdate_blueprint
 from User.workout import workout_blueprint
+from User.workout_set import routine_blueprint
 
 load_dotenv()
 
@@ -34,6 +35,7 @@ def intializeBackend():
     app.register_blueprint(signin_blueprint)
     app.register_blueprint(workout_blueprint)
     app.register_blueprint(updupdate_blueprint)
+    app.register_blueprint(routine_blueprint)
     return app
 
 def streamListener():
