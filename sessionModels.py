@@ -2,6 +2,11 @@ from exercise.util import bone, angle
 import time
 
 class workoutSession:
+    def __init__(self, max_reps, routine_data, routine_counter):
+        self.max_reps = max_reps
+        self.routine_data = routine_data
+        self.routine_counter = routine_counter
+
     time_started =  time.time()
     lastWarned = time.time()
     lastPolled = 0
@@ -11,8 +16,9 @@ class workoutSession:
     totalToAverage = 1
 
 class curlSession(workoutSession):
-    def __init__(self, max_reps, rightEnabled, leftEnabled, alternatingEnabled):
-        self.max_reps = max_reps
+    def __init__(self, max_reps, routine_data, routine_counter, 
+        rightEnabled, leftEnabled, alternatingEnabled):
+        super().__init__(max_reps, routine_data, routine_counter)
         self.rightEnabled = rightEnabled
         self.leftEnabled = leftEnabled
         self.alternatingEnabled = alternatingEnabled
@@ -53,10 +59,13 @@ class curlSession(workoutSession):
                 self.rep_state = state
                 self.rep_progress = 0
 
-                if self.max_reps == self.reps: # done
-                    print("RETURNING COMPLETE DONE")
-                    return "Complete"
-                return "New state"
+                if self.max_reps == self.reps:
+                    self.routine_counter += 1
+                    if self.routine_counter >= len(self.routine_data):
+                        return "complete"
+                    return "next routine"
+
+                return "new state"
             return None # No progress
         
         progressLeft  = max(0, min(self.MAX_PROG, (left_angle - self.UP_THRESHOLD)//self.ANGLE_PROGRESSIONS)) + 1
@@ -86,9 +95,10 @@ class curlSession(workoutSession):
         return
 
 
-def makeSession(mode: str, max_reps: int) -> workoutSession:
+def makeSession(mode: str, max_reps, routine_data, routine_counter) -> workoutSession:
     if mode.find("Bicep") > -1:
-        session = curlSession(max_reps, mode != "Left Bicep Curl", mode != "Right Bicep Curl", mode == "Alternating Bicep Curl")
+        print(max_reps, routine_data, routine_counter)
+        session = curlSession(max_reps, routine_data, routine_counter, mode != "Left Bicep Curl", mode != "Right Bicep Curl", mode == "Alternating Bicep Curl")
         return session
 
     else:
