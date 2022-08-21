@@ -33,16 +33,19 @@ class WorkoutSetModel:
         # get all workout routines
         conn = connect()
 
-        routine_ids = conn.execute("""
-            SELECT id
+        routines = conn.execute("""
+            SELECT id, name
             FROM workout_set
             WHERE user_id = ?
         """, (user_id,)).fetchall()
 
-        routines = {routine_id[0]: [] for routine_id in routine_ids}
+        output_routines = []
 
-        for routine_id in routine_ids:
-            routine_id = routine_id[0]
+        for routine in routines:
+            routine_id = routine[0]
+            routine_name = routine[1]
+
+            print("routine_id", routine_id)
 
             workouts = connect().execute("""
                 SELECT workout_template.id, workout_template.name, workout_type, reps, workout_template.created_date
@@ -52,10 +55,11 @@ class WorkoutSetModel:
                 ORDER BY workout_set_to_workout_template.ind ASC
             """, (user_id, routine_id,)).fetchall()
             workout_json = [{"id": workout[0], "name": workout[1], "workoutType": workout[2], "reps": workout[3], "createdDate": workout[4]} for workout in workouts]
+            routine_json = {"id": routine_id, "name": routine_name, "workouts": workout_json}
 
-            routines[routine_id].append(workout_json)
+            output_routines.append(routine_json)
 
-        return routines
+        return output_routines
 
     def get_workouts_of_routine(self, workout_set_id: int):
         # get all workout routines
@@ -71,4 +75,3 @@ class WorkoutSetModel:
         workout_json = [{"id": workout[0], "name": workout[1], "workoutType": workout[2], "reps": workout[3], "createdDate": workout[4]} for workout in workouts]
 
         return workout_json
-        

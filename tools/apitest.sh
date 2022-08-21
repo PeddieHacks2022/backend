@@ -3,9 +3,9 @@
 # temp simple test script before we have a proper testing system
 
 api_url='http://localhost:8000'
-user_id='90952796'
-routine_id='91323311'
-workout_id='84396080'
+user_id='66293465'
+# routine_id='91323311'
+# workout_id='84396080'
 
 # curl -vL \
 #     -X POST \
