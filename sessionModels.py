@@ -1,11 +1,16 @@
 from exercise.util import bone, angle
+#from db.statistics import StatisticsModel
 import time
 
+#statisticModel = StatisticsModel()
 class workoutSession:
     def __init__(self, max_reps, routine_data, routine_counter):
         self.max_reps = max_reps
         self.routine_data = routine_data
         self.routine_counter = routine_counter
+
+#    def finished(): #update stats
+#        statisticModel.updateStats()
 
     time_started =  time.time()
     lastWarned = time.time()
@@ -104,7 +109,7 @@ class curlSession(workoutSession):
 
 def makeSession(mode: str, max_reps, routine_data, routine_counter) -> workoutSession:
     if mode.find("Bicep") > -1 or mode.find("Overhead") > -1:
-        session = curlSession(max_reps, routine_data, routine_counter, mode.find("Right") > -1, mode.find("Left") > -1, mode.find("Overhead") > -1)
+        session = curlSession(max_reps, routine_data, routine_counter, mode.find("Left") == -1, mode.find("Right") == -1, mode.find("Overhead") > -1)
         return session
 
     else:
