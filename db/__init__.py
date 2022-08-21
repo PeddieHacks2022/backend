@@ -48,6 +48,8 @@ def migrate():
             id INT PRIMARY KEY             NOT NULL,
             workout_template_id     INT    NOT NULL,
             workout_set_id          INT    NOT NULL,
+            ind                     INT    NOT NULL,
+            created_date            TEXT   NOT NULL,
             FOREIGN KEY (workout_template_id) REFERENCES workout_template (id),
             FOREIGN KEY (workout_set_id) REFERENCES workout_set (id)
         )
