@@ -1,7 +1,10 @@
+import time
 from exercise.util import bone, angle
 
 UP_THRESHOLD = 85
 DOWN_THRESHOLD = 140
+ANGLE_PROGRESSIONS = 5
+MAX_PROG = (DOWN_THRESHOLD - UP_THRESHOLD)/ANGLE_PROGRESSIONS
 
 def process_curl(session, points):
 
@@ -28,18 +31,31 @@ def process_curl(session, points):
             return "New state"
         return None # No progress
     
-    progress = (angle - UP_THRESHOLD)//5 + 1
+    progressLeft  = max(0, min(MAX_PROG, (left_angle - UP_THRESHOLD)//ANGLE_PROGRESSIONS)) + 1
+    progressRight = max(0, min(MAX_PROG, (right_angle - UP_THRESHOLD)//ANGLE_PROGRESSIONS)) + 1
     if session.rep_state == "up":
-        max_progress = (DOWN_THRESHOLD - UP_THRESHOLD)//5 + 2
-        progress = max_progress - progress
+        progressLeft =  (MAX_PROG + 2) - progressLeft
+        progressRight = (MAX_PROG + 2) - progressRight
     
+    # Check for syncing (max 1 offset)
+    if abs(progressLeft - progressRight) > 1:
+        if time.time() - session.lastWarned > 2:
+            session.lastWarned = time.time()
+            return "Keep your hands alligned"
+        return
+
+    # Consider lower progress for overall progress
+    progress = min(progressLeft, progressRight)
     if progress < session.rep_progress:
         session.rep_progress = progress
-        stateFlips = {"up":"down", "down":"up"}
-        return "Keep going " + stateFlips[session.rep_state]
+        
+        if time.time() - session.lastWarned > 2:
+            session.lastWarned = time.time()
+            stateFlips = {"up":"down", "down":"up"}
+            return "Keep going " + stateFlips[session.rep_state]
     
     session.rep_progress = progress
-    return None
+    return
 
 #if __name__ == "__main__":
 #    print(process_curl(data.POSE))

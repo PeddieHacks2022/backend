@@ -9,6 +9,7 @@ temporaryData = {}
 dataMapping = {}
 class workoutSession:
     time_started =  time.time()
+    lastWarned = time.time()
     rep_state = "down"
     reps = 0
 
