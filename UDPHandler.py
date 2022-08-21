@@ -2,6 +2,7 @@
 import time
 from sessionModels import makeSession
 from db.workout import WorkoutModel #, get_by_id as getWorkoutById
+from db.workout_set import WorkoutSetModel
 from flask import Blueprint, request
 updupdate_blueprint = Blueprint('updupdate_blueprint', __name__)
 
@@ -9,22 +10,29 @@ updupdate_blueprint = Blueprint('updupdate_blueprint', __name__)
 temporaryData = {}
 dataMapping = {}
 workoutModel = WorkoutModel()
+workoutSetModel = WorkoutSetModel()
 
 # Processing UDP updates 
 def process(address, data):
     #print("Processing", data, " from", address)
     if type(data) == str:
-        userID, workoutID = [int(e) for e in data.split(" ")]
-        workout_specs = workoutModel.get_by_id(workoutID)
-        mode = workout_specs[3]
-        maxReps = workout_specs[4]
-        print(workoutID, mode, maxReps)
+        userID, isRoutine, workoutOrRoutineID = [int(e) for e in data.split(" ")]
+        if isRoutine:
+            routine_data = workoutSetModel.get_workouts_of_routine(workoutOrRoutineID)
+            mode = routine_data[0]["workoutType"]
+            maxReps = routine_data[0]["reps"]
+            print("Routine of length", len(routine_data))
+
+        else:
+            routine_data = []
+            workout_specs = workoutModel.get_by_id(workoutOrRoutineID)
+            mode = workout_specs[3]
+            maxReps = workout_specs[4]
 
         # Add new user 
-        session = makeSession(mode, maxReps)
+        session = makeSession(mode, maxReps, routine_data, 0)
         temporaryData[address[0]] = session
         dataMapping[userID] = address[0]
-        print("Starting excersize UDP")
         return
     
     # Process table update
@@ -41,7 +49,6 @@ def process(address, data):
 # Allow for http polling
 @updupdate_blueprint.route('/udp/update', methods=["POST"])
 def poll():
-    #return "Malformed Request", 400
     id = request.json.get("ID", None)
     if not (id and type(id) == int):
         return "Malformed Request", 400
@@ -81,7 +88,17 @@ def poll():
         # TODO: clear data
         return {"change": "complete"}
 
-    elif change == "New state":
+    elif change == "next routine":
+        next_workout_data = session.routine_data[session.routine_counter]
+        mode = next_workout_data["workoutType"]
+        maxReps = next_workout_data["workoutType"]
+
+        session = makeSession(mode, maxReps, session.routine_data, session.routine_counter)
+        temporaryData[addr] = session
+
+        return {"change": "new routine", "details": mode}
+
+    elif change == "new state":
         print("New State:", session.rep_state, "total reps:", session.reps)
         return {"change": session.rep_state, "reps": session.reps}
 

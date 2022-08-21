@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 import os
 
 from db import migrate
+from graphing.upload_images import graphing_blueprint
 from Account.signup import signup_blueprint
 from Account.signin import signin_blueprint
 from UDPHandler import updupdate_blueprint
@@ -32,6 +33,7 @@ def intializeBackend():
     # Connect flask and appropriate blueprints
     app = Flask(__name__)
     app.register_blueprint(signup_blueprint)
+    app.register_blueprint(graphing_blueprint)
     app.register_blueprint(signin_blueprint)
     app.register_blueprint(workout_blueprint)
     app.register_blueprint(updupdate_blueprint)

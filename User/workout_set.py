@@ -9,7 +9,7 @@ PREFIX = "/user/<int:user_id>/routine"
 
 @routine_blueprint.route(PREFIX, methods=["POST"])
 def post(user_id: int):
-
+    print(request.json)
     name = request.json.get("name", None)
     workoutIDs = request.json.get("workoutIDs", None)
 
@@ -17,8 +17,10 @@ def post(user_id: int):
         return "Malformed Request", 400
 
     id = model.create(user_id, name)
-    for i, workoutID in workoutIDs.enumurate():
+    i = 0
+    for workoutID in workoutIDs:
         model.insert_link(id, workoutID, i)
+        i += 1
 
 
     return "Ok", 200
