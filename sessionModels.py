@@ -17,13 +17,13 @@ class workoutSession:
 
 class curlSession(workoutSession):
     def __init__(self, max_reps, routine_data, routine_counter, 
-        rightEnabled, leftEnabled, alternatingEnabled):
+        rightEnabled, leftEnabled, overheadEnabled):
         super().__init__(max_reps, routine_data, routine_counter)
         self.rightEnabled = rightEnabled
         self.leftEnabled = leftEnabled
-        self.alternatingEnabled = alternatingEnabled
+        self.overheadEnabled = overheadEnabled
 
-    rep_state = "down"
+    rep_state = None
     rep_progress = 0
 
     UP_THRESHOLD = 80
@@ -51,7 +51,14 @@ class curlSession(workoutSession):
             state = "up"
         if (left_angle > self.DOWN_THRESHOLD and right_angle > self.DOWN_THRESHOLD):
             state = "down"
+        if (self.overheadEnabled):
+            state = state == "up" and "down" or "up"
 
+        if not self.rep_state:
+            # intialize repstate
+            self.rep_state = state or "down"
+            return 
+        
         if state:
             if self.rep_state != state:
                 if state == "up":
@@ -96,9 +103,8 @@ class curlSession(workoutSession):
 
 
 def makeSession(mode: str, max_reps, routine_data, routine_counter) -> workoutSession:
-    if mode.find("Bicep") > -1:
-        print(max_reps, routine_data, routine_counter)
-        session = curlSession(max_reps, routine_data, routine_counter, mode != "Left Bicep Curl", mode != "Right Bicep Curl", mode == "Alternating Bicep Curl")
+    if mode.find("Bicep") > -1 or mode.find("Overhead") > -1:
+        session = curlSession(max_reps, routine_data, routine_counter, mode.find("Right") > -1, mode.find("Left") > -1, mode.find("Overhead") > -1)
         return session
 
     else:
