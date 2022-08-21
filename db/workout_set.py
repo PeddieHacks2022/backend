@@ -45,7 +45,7 @@ class WorkoutSetModel:
             routine_id = routine_id[0]
 
             workouts = connect().execute("""
-                SELECT workout_template.id, workout_template.name, workout_type, reps, created_date
+                SELECT workout_template.id, workout_template.name, workout_type, reps, workout_template.created_date
                 FROM workout_set_to_workout_template INNER JOIN workout_template
                 ON workout_set_to_workout_template.workout_template_id = workout_template.id
                 WHERE workout_template.user_id == ? AND workout_set_to_workout_template.workout_set_id = ?
@@ -62,7 +62,7 @@ class WorkoutSetModel:
         conn = connect()
 
         workouts = conn.execute("""
-            SELECT workout_template.id, workout_template.name, workout_type, reps, created_date
+            SELECT workout_template.id, workout_template.name, workout_type, reps, workout_template.created_date
             FROM workout_set_to_workout_template INNER JOIN workout_template
             ON workout_set_to_workout_template.workout_template_id = workout_template.id
             WHERE workout_set_to_workout_template.workout_set_id = ?
