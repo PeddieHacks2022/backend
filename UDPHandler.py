@@ -1,21 +1,12 @@
 # imports
 import time
-from exercise import process as processWorkoutChange
+from sessionModels import makeSession
 from flask import Blueprint, request
 updupdate_blueprint = Blueprint('updupdate_blueprint', __name__)
 
 # data storage
 temporaryData = {}
 dataMapping = {}
-class workoutSession:
-    time_started =  time.time()
-    lastWarned = time.time()
-    rep_state = "down"
-    reps = 0
-
-    jointTotals = None
-    totalToAverage = 1
-    rep_progress = 0
 
 # Processing UDP updates 
 def process(address, data):
@@ -25,9 +16,9 @@ def process(address, data):
         mode = "curl" # access dao
 
         # Add new user 
-        session = workoutSession()
+        session = makeSession(mode)
         temporaryData[address[0]] = session
-        dataMapping[userID] = [address[0], mode]
+        dataMapping[userID] = address[0]
         print("Made new account")
         return
     
@@ -49,15 +40,22 @@ def poll():
     if not (id and type(id) == int):
         return "Malformed Request", 400
     
-    addr, mode = dataMapping[id]
+    addr = dataMapping[id]
     session = temporaryData[addr]
+
+    # Limit polling to 100ms
+    if time.time() - session.lastPolled > 0.1:
+        session.lastPolled = time.time()
+    else:
+        return {"change": "nothing"}
+
+    # Ensure we have recieved udp since last poll
     if not session.jointTotals:
-        return "no data", 400
+        return "no data", 401
     
     # Get important specifics for udp
     totals = session.jointTotals
     amount = session.totalToAverage
-    #print("changes made:", amount)
     
     # Clear data
     session.jointTotals = None
@@ -68,9 +66,8 @@ def poll():
         for i in range(3):
             totals[jointName][i] /= amount
     
-    
     #print("totals:", totals)
-    change = processWorkoutChange(mode, session, totals)
+    change = session.process_poll(totals)
     if not change:
         return {"change": "nothing"}
 
