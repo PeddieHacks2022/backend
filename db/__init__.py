@@ -55,6 +55,16 @@ def migrate():
         )
     ''')
 
+    print("Migrating statistics table...")
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS statistics (
+            id INT PRIMARY KEY          NOT NULL,
+            date                TEXT    NOT NULL,
+            data                TEXT    NOT NULL,
+            user_id             INT     NOT NULL
+        )
+    ''')
+
 
 def purge():
     conn = connect()

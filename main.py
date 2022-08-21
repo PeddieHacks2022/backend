@@ -13,6 +13,7 @@ from Account.signin import signin_blueprint
 from UDPHandler import updupdate_blueprint
 from User.workout import workout_blueprint
 from User.workout_set import routine_blueprint
+from db.statistics import init as statInit
 
 load_dotenv()
 
@@ -57,6 +58,7 @@ def streamListener():
 
 if __name__ == "__main__":
     app = intializeBackend()
+    #statInit()
     t1 = threading.Thread(target=streamListener)
     t1.daemon = True
     t1.start()

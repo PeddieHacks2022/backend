@@ -13,7 +13,7 @@ def generate_time_graph(dates, timeInMinutes):
   plt.xlabel('Date')
   plt.ylabel('Time in Minutes')
   plt.gcf().autofmt_xdate()
-  plt.savefig('./statistics/graphs/time_graph.png')
+  plt.savefig('./graphing/graphs/time_graph.png')
   line = line.pop(0)
   line.remove()
 
@@ -32,7 +32,7 @@ def generate_reps_graph(dates, repsPerDay):
   plt.legend(repsPerDay.keys())
   plt.ylim([0, max(prev) * 1.25])
   plt.title('Exercises by Rep Done in Last Week')
-  plt.savefig('./statistics/graphs/reps_graph.png')
+  plt.savefig('./graphing/graphs/reps_graph.png')
 
 if __name__ == "__main__":
     dates = ['01/02/1991','01/03/1991','01/04/1991']
