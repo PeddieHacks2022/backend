@@ -39,7 +39,16 @@ def process(address, data):
         return
     
     # Process table update
-    session = temporaryData[address[0]]
+    try:
+        session = temporaryData[address[0]]
+        
+        if session == None:
+            print("GETTING UDP WITH NONE SESSION")
+            return
+    except:
+        print("GETTING UDP WITHOUT SESSION")
+        return
+    
     if not session.jointTotals: # initialize iteration table
         session.jointTotals = data
         return
@@ -88,7 +97,8 @@ def poll():
         return {"change": "nothing"}
 
     elif change == "complete": # finished
-        # TODO: clear data
+        dataMapping[id] = None
+        temporaryData[addr] = None
         print("FINISHED!!!!!!!!!!!!!!!!")
         return {"change": "complete"}
 
