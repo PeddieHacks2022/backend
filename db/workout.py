@@ -18,7 +18,7 @@ class WorkoutModel:
         return id
 
     def get_by_id(self, workout_id: int):
-        return connect().execute("SELECT * FROM workout_template WHERE id = ?", (workout_id,)).fetchone()
+        return connect().execute(f"SELECT * FROM workout_template WHERE id = {str(workout_id)}").fetchone()
 
     def get_by_user(self, user_id: int):
         return connect().execute("""

@@ -1,25 +1,29 @@
 # imports
 import time
 from sessionModels import makeSession
+from db.workout import WorkoutModel #, get_by_id as getWorkoutById
 from flask import Blueprint, request
 updupdate_blueprint = Blueprint('updupdate_blueprint', __name__)
 
 # data storage
 temporaryData = {}
 dataMapping = {}
+workoutModel = WorkoutModel()
 
 # Processing UDP updates 
 def process(address, data):
     #print("Processing", data, " from", address)
     if type(data) == str:
         userID, workoutID = [int(e) for e in data.split(" ")]
-        mode = "curl" # access dao
+        workout_specs = workoutModel.get_by_id(workoutID)
+        mode = workout_specs[3]
+        maxReps = workout_specs[4]
 
         # Add new user 
-        session = makeSession(mode)
+        session = makeSession(mode, maxReps)
         temporaryData[address[0]] = session
         dataMapping[userID] = address[0]
-        print("Made new account")
+        print("Starting excersize UDP")
         return
     
     # Process table update
@@ -70,6 +74,10 @@ def poll():
     change = session.process_poll(totals)
     if not change:
         return {"change": "nothing"}
+
+    elif change == "Complete": # finished
+        # TODO: clear data
+        return {"change": "Complete"}
 
     elif change == "New state":
         print("New State:", session.rep_state, "total reps:", session.reps)

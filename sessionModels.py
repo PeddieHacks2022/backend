@@ -11,6 +11,12 @@ class workoutSession:
     totalToAverage = 1
 
 class curlSession(workoutSession):
+    def __init__(self, max_reps, rightEnabled, leftEnabled, alternatingEnabled):
+        self.max_reps = max_reps
+        self.rightEnabled = rightEnabled
+        self.leftEnabled = leftEnabled
+        self.alternatingEnabled = alternatingEnabled
+
     rep_state = "down"
     rep_progress = 0
 
@@ -29,6 +35,11 @@ class curlSession(workoutSession):
         left_angle = angle(left_forearm_to_left_arm, left_forearm_to_left_hand)
         right_angle = angle(right_forearm_to_right_arm, right_forearm_to_right_hand)
 
+        if not self.rightEnabled:
+            right_angle = left_angle
+        elif not self.leftEnabled:
+            left_angle = right_angle
+
         state = None
         if (left_angle < self.UP_THRESHOLD and right_angle < self.UP_THRESHOLD):
             state = "up"
@@ -40,6 +51,9 @@ class curlSession(workoutSession):
                 self.reps += 1
                 self.rep_state = state
                 self.rep_progress = 0
+
+                if self.max_reps == self.reps: # done
+                    return "Complete"
                 return "New state"
             return None # No progress
         
@@ -70,7 +84,11 @@ class curlSession(workoutSession):
         return
 
 
-def makeSession(mode: str) -> workoutSession:
-    if mode == "curl":
-        return curlSession()
+def makeSession(mode: str, max_reps: int) -> workoutSession:
+    if mode.find("Bicept") > -1:
+        session = curlSession(max_reps, mode != "Left Bicep Curl", mode != "Right Bicep Curl", mode == "Alternating Bicep Curl")
+        return session
+
+    else:
+        print("NOT BICEPS")
         
