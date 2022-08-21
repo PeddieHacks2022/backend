@@ -15,8 +15,11 @@ workoutSetModel = WorkoutSetModel()
 # Processing UDP updates 
 def process(address, data):
     #print("Processing", data, " from", address)
+    #print(data)
     if type(data) == str:
         userID, isRoutine, workoutOrRoutineID = [int(e) for e in data.split(" ")]
+        print("GOT FIRST: ", userID, isRoutine, workoutOrRoutineID)
+
         if isRoutine:
             routine_data = workoutSetModel.get_workouts_of_routine(workoutOrRoutineID)
             mode = routine_data[0]["workoutType"]
@@ -86,17 +89,18 @@ def poll():
 
     elif change == "complete": # finished
         # TODO: clear data
+        print("FINISHED!!!!!!!!!!!!!!!!")
         return {"change": "complete"}
 
     elif change == "next routine":
         next_workout_data = session.routine_data[session.routine_counter]
         mode = next_workout_data["workoutType"]
-        maxReps = next_workout_data["workoutType"]
+        maxReps = next_workout_data["reps"]
 
         session = makeSession(mode, maxReps, session.routine_data, session.routine_counter)
         temporaryData[addr] = session
 
-        return {"change": "new routine", "details": mode}
+        return {"change": "message", "details": f"Set complete. Next workout is {maxReps} reps of {mode}"}
 
     elif change == "new state":
         print("New State:", session.rep_state, "total reps:", session.reps)
@@ -104,4 +108,4 @@ def poll():
 
     else:
         print("Bad form: ", change)
-        return {"change": "bad form", "details": change}
+        return {"change": "message", "details": change}
