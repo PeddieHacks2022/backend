@@ -18,6 +18,7 @@ def process(address, data):
         workout_specs = workoutModel.get_by_id(workoutID)
         mode = workout_specs[3]
         maxReps = workout_specs[4]
+        print(workoutID, mode, maxReps)
 
         # Add new user 
         session = makeSession(mode, maxReps)
@@ -40,6 +41,7 @@ def process(address, data):
 # Allow for http polling
 @updupdate_blueprint.route('/udp/update', methods=["POST"])
 def poll():
+    #return "Malformed Request", 400
     id = request.json.get("ID", None)
     if not (id and type(id) == int):
         return "Malformed Request", 400
@@ -75,9 +77,9 @@ def poll():
     if not change:
         return {"change": "nothing"}
 
-    elif change == "Complete": # finished
+    elif change == "complete": # finished
         # TODO: clear data
-        return {"change": "Complete"}
+        return {"change": "complete"}
 
     elif change == "New state":
         print("New State:", session.rep_state, "total reps:", session.reps)

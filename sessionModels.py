@@ -21,7 +21,7 @@ class curlSession(workoutSession):
     rep_progress = 0
 
     UP_THRESHOLD = 80
-    DOWN_THRESHOLD = 145
+    DOWN_THRESHOLD = 135
     ANGLE_PROGRESSIONS = 5
     MAX_PROG = (DOWN_THRESHOLD - UP_THRESHOLD)/ANGLE_PROGRESSIONS
 
@@ -48,11 +48,13 @@ class curlSession(workoutSession):
 
         if state:
             if self.rep_state != state:
-                self.reps += 1
+                if state == "up":
+                    self.reps += 1
                 self.rep_state = state
                 self.rep_progress = 0
 
                 if self.max_reps == self.reps: # done
+                    print("RETURNING COMPLETE DONE")
                     return "Complete"
                 return "New state"
             return None # No progress
@@ -85,7 +87,7 @@ class curlSession(workoutSession):
 
 
 def makeSession(mode: str, max_reps: int) -> workoutSession:
-    if mode.find("Bicept") > -1:
+    if mode.find("Bicep") > -1:
         session = curlSession(max_reps, mode != "Left Bicep Curl", mode != "Right Bicep Curl", mode == "Alternating Bicep Curl")
         return session
 

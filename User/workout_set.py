@@ -17,8 +17,9 @@ def post(user_id: int):
         return "Malformed Request", 400
 
     id = model.create(user_id, name)
-    for workoutID in workoutIDs:
-        model.insert_link(id, workoutID)
+    for i, workoutID in workoutIDs.enumurate():
+        model.insert_link(id, workoutID, i)
+
 
     return "Ok", 200
 

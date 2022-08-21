@@ -17,13 +17,13 @@ class WorkoutSetModel:
         conn.commit()
         return id
 
-    def insert_link(self, workout_set_id: int, workout_template_id: int) -> int:
+    def insert_link(self, workout_set_id: int, workout_template_id: int, index: int) -> int:
         id = generate_id()
 
         conn = connect()
         conn.execute(
-            "INSERT INTO workout_set_to_workout_template VALUES (:id, :workout_template_id, :workout_set_id)",
-            {"id": id, "workout_template_id": workout_template_id, "workout_set_id": workout_set_id, "created_date": datetime.datetime.now()}
+            "INSERT INTO workout_set_to_workout_template VALUES (:id, :workout_template_id, :workout_set_id, :ind, :created_date)",
+            {"id": id, "workout_template_id": workout_template_id, "workout_set_id": workout_set_id, "ind": index, "created_date": datetime.datetime.now()}
         );
         conn.commit()
         return id
@@ -49,6 +49,7 @@ class WorkoutSetModel:
                 FROM workout_set_to_workout_template INNER JOIN workout_template
                 ON workout_set_to_workout_template.workout_template_id = workout_template.id
                 WHERE workout_template.user_id == ? AND workout_set_to_workout_template.workout_set_id = ?
+                ORDER BY workout_set_to_workout_template.ind ASC
             """, (user_id, routine_id,)).fetchall()
             workout_json = [{"id": workout[0], "name": workout[1], "workoutType": workout[2], "reps": workout[3], "createdDate": workout[4]} for workout in workouts]
 
