@@ -113,7 +113,6 @@ def init():
     statisticsModel.updateStats(1500, "Bicep Curl",             30, 1, d)
     """
 
-    
     start_date = datetime(2022, 8, 15)
     dates = [(start_date + timedelta(days=i)).strftime('%m/%d/%Y') for i in range(7)]
     total_times = [0 for i in range(7)]
@@ -128,12 +127,14 @@ def init():
             total_times[i] += sum(data[5:12])
             for m in range(6):
                 mode = WORKOUT_MODES[m]
-                rep_counts[mode][i] += data[i]
-            
-    
-    #print(dates)
-    #print(total_times)
-    #print(rep_counts)
+                rep_counts[mode][i] += data[m]
+
+            if i == 2:
+                print("DATA 2", data)
+                print("TIMES", total_times)
+                print("REP STATE", rep_counts)
+        else:
+            print("No node", i)
 
     generate_time_graph(dates, total_times)
     generate_reps_graph(dates, rep_counts)
